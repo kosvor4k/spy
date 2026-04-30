@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Spy Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <strong>Spy</strong>
+        <span>Мобильная игра для компании</span>
+      </div>
+    </header>
+
+    <section id="setupScreen" class="screen active">
+      <div class="card panel">
+        <h1>Настройка игры</h1>
+        <label class="field">
+          <span>Число игроков</span>
+          <input id="playerCount" type="number" min="2" max="12" value="5">
+        </label>
+        <label class="field">
+          <span>Слово / категория</span>
+          <textarea id="wordList" rows="4" placeholder="Добавьте свои слова, каждое с новой строки"></textarea>
+          <small>Оставьте пустым для случайного слова.</small>
+        </label>
+        <label class="field field-inline">
+          <span>Таймер</span>
+          <select id="timerMode">
+            <option value="off">Выкл.</option>
+            <option value="on">Вкл.</option>
+          </select>
+        </label>
+        <label class="field field-inline">
+          <span>Время, мин</span>
+          <input id="timerMinutes" type="number" min="1" max="30" value="5">
+        </label>
+        <button id="startButton" class="primary">Начать игру</button>
+      </div>
+    </section>
+
+    <section id="playScreen" class="screen">
+      <div class="card panel">
+        <div class="status-row">
+          <div>Игрок <span id="currentPlayerLabel">1</span> из <span id="totalPlayersLabel">5</span></div>
+          <div id="timerDisplay" class="timer hidden">00:00</div>
+        </div>
+        <div id="cardButton" class="word-card">
+          <div id="cardText">Нажмите карту, чтобы узнать свою роль</div>
+          <div id="cardHint" class="hint">Первое нажатие показывает слово, второе скрывает и передает ход.</div>
+        </div>
+        <div class="controls-row">
+          <button id="endRoundButton" class="secondary">Завершить игру</button>
+          <button id="stopTimerButton" class="secondary">Выход из таймера</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <div class="card panel">
+        <h1 id="resultTitle">Игра завершена</h1>
+        <p id="resultMessage">Спасибо за игру!</p>
+        <button id="newGameButton" class="primary">Начать новую игру</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
