@@ -138,7 +138,7 @@ function getRandomWord() {
       return customWords[Math.floor(Math.random() * customWords.length)];
     }
   }
-  return sampleWords[Math.floor(Math.random() * sampleWords.length)];
+  return spyWords[Math.floor(Math.random() * spyWords.length)];
 }
 
 function pickSpyCount(count) {
