@@ -223,7 +223,8 @@ function startGame() {
   initPlayers();
   totalPlayersLabel.textContent = String(total);
   currentPlayerLabel.textContent = String(currentPlayerIndex + 1);
-  cardText.textContent = 'Нажмите карту, чтобы узнать свою роль';
+  cardText.textContent = 'Нажмите карту';
+  cardButton.classList.remove('spy-card');
   timerDisplay.textContent = '00:00';
   timerDisplay.classList.add('hidden');
   if (timerEnabled) {
@@ -241,22 +242,25 @@ function revealCurrentCard() {
   if (!cardVisible) {
     cardVisible = true;
     if (currentPlayer.role === 'spy') {
-      cardText.textContent = 'Вы шпион! Сыграйте уверенно и постарайтесь не выдать себя.';
+      cardText.textContent = 'Шпион';
+      cardButton.classList.add('spy-card');
     } else {
-      cardText.textContent = `Ваше слово: ${word}`;
+      cardText.textContent = word;
+      cardButton.classList.remove('spy-card');
     }
   } else {
     cardVisible = false;
     currentPlayer.seen = true;
+    cardButton.classList.remove('spy-card');
     currentPlayerIndex += 1;
     if (currentPlayerIndex >= players.length) {
       // Все посмотрели роли, теперь игра начинается
-      cardText.textContent = 'Игра началась! Обсудите и выясните, кто шпион.';
+      cardText.textContent = 'Игра началась!';
       if (timerEnabled) startTimer();
       return;
     }
     currentPlayerLabel.textContent = String(currentPlayerIndex + 1);
-    cardText.textContent = 'Нажмите карту, чтобы узнать свою роль';
+    cardText.textContent = 'Нажмите карту';
   }
 }
 
