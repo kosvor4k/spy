@@ -32,6 +32,27 @@ let remainingSeconds = 0;
 let timerEnabled = false;
 let gameFinished = false;
 
+function saveSettings() {
+  localStorage.setItem('spyGame_playerCount', playerCountInput.value);
+  localStorage.setItem('spyGame_wordList', wordListInput.value);
+  localStorage.setItem('spyGame_timerMode', timerModeSelect.value);
+  localStorage.setItem('spyGame_timerMinutes', timerMinutesInput.value);
+}
+
+function loadSettings() {
+  const savedPlayerCount = localStorage.getItem('spyGame_playerCount');
+  if (savedPlayerCount) playerCountInput.value = savedPlayerCount;
+
+  const savedWordList = localStorage.getItem('spyGame_wordList');
+  if (savedWordList) wordListInput.value = savedWordList;
+
+  const savedTimerMode = localStorage.getItem('spyGame_timerMode');
+  if (savedTimerMode) timerModeSelect.value = savedTimerMode;
+
+  const savedTimerMinutes = localStorage.getItem('spyGame_timerMinutes');
+  if (savedTimerMinutes) timerMinutesInput.value = savedTimerMinutes;
+}
+
 function showScreen(screen) {
   setupScreen.classList.remove('active');
   playScreen.classList.remove('active');
@@ -56,9 +77,9 @@ function getRandomWord() {
 function pickSpyCount(count) {
   if (count <= 2) return 1;
   const random = Math.random();
-  if (random < 0.78) return 1;
-  if (random < 0.95) return 2;
-  if (random < 0.995) return Math.min(3, count);
+  if (random < 0.95) return 1;
+  if (random < 0.999) return 2;
+  if (random < 0.9999) return Math.min(3, count);
   return count;
 }
 
@@ -122,6 +143,7 @@ function startGame() {
     alert('Максимум 12 игроков.');
     return;
   }
+  saveSettings();
   timerEnabled = timerModeSelect.value === 'on';
   currentPlayerIndex = 0;
   cardVisible = false;
@@ -134,7 +156,7 @@ function startGame() {
   timerDisplay.textContent = '00:00';
   timerDisplay.classList.add('hidden');
   showScreen(playScreen);
-  if (timerEnabled) startTimer();
+  // Таймер запускается после того, как все игроки посмотрят роли
 }
 
 function revealCurrentCard() {
@@ -152,7 +174,9 @@ function revealCurrentCard() {
     currentPlayer.seen = true;
     currentPlayerIndex += 1;
     if (currentPlayerIndex >= players.length) {
-      finishGame('Все посмотрели карты', 'Передайте ход обсуждению и выяснению, кто шпион.');
+      // Все посмотрели роли, теперь игра начинается
+      cardText.textContent = 'Игра началась! Обсудите и выясните, кто шпион.';
+      if (timerEnabled) startTimer();
       return;
     }
     currentPlayerLabel.textContent = String(currentPlayerIndex + 1);
@@ -190,3 +214,6 @@ window.addEventListener('keydown', (event) => {
     startGame();
   }
 });
+
+// Загрузка сохраненных настроек при запуске
+loadSettings();
