@@ -14,6 +14,9 @@ const resultTitle = document.getElementById('resultTitle');
 const resultMessage = document.getElementById('resultMessage');
 
 const playerCountInput = document.getElementById('playerCount');
+const spyModeSelect = document.getElementById('spyMode');
+const spyCountField = document.getElementById('spyCountField');
+const spyCountInput = document.getElementById('spyCount');
 const wordListInput = document.getElementById('wordList');
 const timerModeSelect = document.getElementById('timerMode');
 const timerMinutesInput = document.getElementById('timerMinutes');
@@ -80,6 +83,8 @@ let gameFinished = false;
 
 function saveSettings() {
   localStorage.setItem('spyGame_playerCount', playerCountInput.value);
+  localStorage.setItem('spyGame_spyMode', spyModeSelect.value);
+  localStorage.setItem('spyGame_spyCount', spyCountInput.value);
   localStorage.setItem('spyGame_wordList', wordListInput.value);
   localStorage.setItem('spyGame_timerMode', timerModeSelect.value);
   localStorage.setItem('spyGame_timerMinutes', timerMinutesInput.value);
@@ -89,6 +94,12 @@ function loadSettings() {
   const savedPlayerCount = localStorage.getItem('spyGame_playerCount');
   if (savedPlayerCount) playerCountInput.value = savedPlayerCount;
 
+  const savedSpyMode = localStorage.getItem('spyGame_spyMode');
+  if (savedSpyMode) spyModeSelect.value = savedSpyMode;
+
+  const savedSpyCount = localStorage.getItem('spyGame_spyCount');
+  if (savedSpyCount) spyCountInput.value = savedSpyCount;
+
   const savedWordList = localStorage.getItem('spyGame_wordList');
   if (savedWordList) wordListInput.value = savedWordList;
 
@@ -97,6 +108,16 @@ function loadSettings() {
 
   const savedTimerMinutes = localStorage.getItem('spyGame_timerMinutes');
   if (savedTimerMinutes) timerMinutesInput.value = savedTimerMinutes;
+
+  updateSpyFieldVisibility();
+}
+
+function updateSpyFieldVisibility() {
+  if (spyModeSelect.value === 'manual') {
+    spyCountField.style.display = 'block';
+  } else {
+    spyCountField.style.display = 'none';
+  }
 }
 
 function showScreen(screen) {
@@ -123,15 +144,22 @@ function getRandomWord() {
 function pickSpyCount(count) {
   if (count <= 2) return 1;
   const random = Math.random();
-  if (random < 0.95) return 1;
-  if (random < 0.999) return 2;
-  if (random < 0.9999) return Math.min(3, count);
+  if (random < 0.7) return 1;
+  if (random < 0.9) return 2;
+  if (random < 0.95) return Math.min(3, count);
   return count;
 }
 
 function initPlayers() {
   const total = Number(playerCountInput.value) || 2;
-  const spyCount = pickSpyCount(total);
+  let spyCount;
+  if (spyModeSelect.value === 'manual') {
+    spyCount = Number(spyCountInput.value) || 1;
+    if (spyCount > total) spyCount = total;
+    if (spyCount < 1) spyCount = 1;
+  } else {
+    spyCount = pickSpyCount(total);
+  }
   const roles = Array.from({length: total}, () => 'player');
   for (let i = 0; i < spyCount; i++) {
     roles[i] = 'spy';
@@ -149,9 +177,6 @@ function initPlayers() {
 
 function startTimer() {
   if (!timerEnabled) return;
-  timerDisplay.classList.remove('hidden');
-  remainingSeconds = Number(timerMinutesInput.value) * 60;
-  updateTimerText();
   timerId = setInterval(() => {
     remainingSeconds -= 1;
     if (remainingSeconds <= 0) {
@@ -201,6 +226,11 @@ function startGame() {
   cardText.textContent = 'Нажмите карту, чтобы узнать свою роль';
   timerDisplay.textContent = '00:00';
   timerDisplay.classList.add('hidden');
+  if (timerEnabled) {
+    remainingSeconds = Number(timerMinutesInput.value) * 60;
+    updateTimerText();
+    timerDisplay.classList.remove('hidden');
+  }
   showScreen(playScreen);
   // Таймер запускается после того, как все игроки посмотрят роли
 }
@@ -247,6 +277,7 @@ function resetGame() {
 cardButton.addEventListener('click', revealCurrentCard);
 startButton.addEventListener('click', startGame);
 newGameButton.addEventListener('click', resetGame);
+spyModeSelect.addEventListener('change', updateSpyFieldVisibility);
 stopTimerButton.addEventListener('click', () => {
   stopTimer();
   alert('Таймер остановлен. Вы можете завершить игру или продолжить без отсчета времени.');

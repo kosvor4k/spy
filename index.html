@@ -23,6 +23,17 @@
           <input id="playerCount" type="number" min="2" max="12" value="5">
         </label>
         <label class="field">
+          <span>Режим шпионов</span>
+          <select id="spyMode">
+            <option value="auto">Автоматический</option>
+            <option value="manual">Ручной</option>
+          </select>
+        </label>
+        <label class="field" id="spyCountField" style="display: none;">
+          <span>Количество шпионов</span>
+          <input id="spyCount" type="number" min="1" max="12" value="1">
+        </label>
+        <label class="field">
           <span>Слово / категория</span>
           <textarea id="wordList" rows="4" placeholder="Добавьте свои слова, каждое с новой строки"></textarea>
           <small>Оставьте пустым для случайного слова.</small>
